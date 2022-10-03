@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:math_expressions/math_expressions.dart';
 
 void main() {
   runApp(Calculator());
@@ -25,53 +24,75 @@ class SimpleCalculator extends StatefulWidget {
 
 class _SimpleCalculatorState extends State<SimpleCalculator> {
   String equation = "0";
-  String result ="0";
-  String expression ="";
-  buttonPressed(String buttonText){
+  String result = "0";
+  String expression = "";
+  String operand1="";
+  String operand2="";
+  var c = 0;
+  var d = 0;
+  var count = 0;
+
+  buttonPressed(String buttonText) {
     setState(() {
-      if(buttonText=="C"){
-        equation="0";
-        result="0";
-      }else if(buttonText == "=") {
-        expression =equation;
-
-        try {
-          Parser p = Parser();
-          Expression exp = p.parse(expression);
-
-          ContextModel cm = ContextModel();
-          result = '${exp.evaluate(EvaluationType.REAL, cm)}';
-        } catch (e) {
-          result = "Error";
-        }
-      }
-      else {
+      if (buttonText == "C") {
+        equation = "";
+        result = "0";
+        operand2="";
+        operand1="";
+        expression="";
+        count = 0;
+      } else if (buttonText == "=") {
+        result = d.toString();
+        // equation = "0";
+        // operand2="";
+        // operand1="";
+        // expression="";
+      } else {
         if (equation == "0") {
           equation = buttonText;
-        }
-        else {
-          equation = equation + buttonText;
-        }
-      }});
 
+        } else {
+          if (buttonText == '+') {
+            c = int.parse(equation);
+            // operand2=c.toString();
+            expression = buttonText;
+
+            // equation = equation + buttonText;
+            equation = '';
+            count = count+1;
+            return;
+          } else
+            equation = equation + buttonText;
+          if(count==0){
+            operand1=equation;
+          }
+          else{
+            operand2 = equation;
+          }
+
+          d = c + int.parse(equation);
+
+        }
+      }
+    });
   }
+
   Widget buildButton(
-      String buttonText, double buttonHeight, Color buttonColor)
-  {
+      String buttonText, double buttonHeight, Color buttonColor) {
     return Container(
       height: MediaQuery.of(context).size.height * 0.1 * buttonHeight,
       child: TextButton(
-          onPressed: ()=> buttonPressed(buttonText),
+          onPressed: () => buttonPressed(buttonText),
           child: Text(
             buttonText,
             style: TextStyle(
                 fontSize: 40.0,
                 fontWeight: FontWeight.normal,
                 color: Colors.white),
-          )
-      ),
+          )),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -84,21 +105,26 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
             backgroundColor: Colors.transparent,
             body: Column(children: <Widget>[
               Container(
-
                 alignment: Alignment.centerRight,
                 padding: EdgeInsets.fromLTRB(10, 30, 10, 0),
-
-                child: Text(result,
+              ),
+              Container(
+                alignment: Alignment.centerRight,
+                padding: EdgeInsets.fromLTRB(10, 30, 10, 0),
+                child: Text(
+                  result,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 50.0,
                   ),
                 ),
               ),
+
               Container(
                 alignment: Alignment.centerRight,
                 padding: EdgeInsets.fromLTRB(10, 30, 10, 0),
-                child: Text(equation,
+                child: Text(
+                  operand1+expression+operand2,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 50.0,
@@ -119,28 +145,28 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
                                 fixedSize: Size(190, 49),
                                 primary: Colors.black,
                                 shape: RoundedRectangleBorder(
-                                  //to set border radius to button
+                                    //to set border radius to button
                                     borderRadius: BorderRadius.circular(50)),
                               ),
                               child: Text("(", style: TextStyle(fontSize: 25)),
-                              onPressed: ()=> buttonPressed("("),
+                              onPressed: () => buttonPressed("("),
                             ),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 fixedSize: Size(190, 49),
                                 primary: Colors.black,
                                 shape: RoundedRectangleBorder(
-                                  //to set border radius to button
+                                    //to set border radius to button
                                     borderRadius: BorderRadius.circular(50)),
                               ),
                               child: Text(")", style: TextStyle(fontSize: 25)),
-                              onPressed: ()=> buttonPressed(")"),
+                              onPressed: () => buttonPressed(")"),
                             ),
                           ]))
                 ],
               ),
               Row(
-                // mainAxisAlignment: MainAxisAlignment.center,
+                  // mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Expanded(
                       child: Container(
@@ -184,32 +210,36 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
                               Row(
                                 children: [
                                   ElevatedButton(
-                                    onPressed: ()=> buttonPressed("-"),
-
+                                    onPressed: () => buttonPressed("-"),
                                     style: ElevatedButton.styleFrom(
                                         padding: const EdgeInsets.all(0.0),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(50),
-                                        )
-                                    ),
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                        )),
                                     child: Ink(
                                       decoration: const BoxDecoration(
                                         gradient: LinearGradient(
                                             begin: Alignment.bottomRight,
                                             end: Alignment.topLeft,
-                                            colors: [Colors.pinkAccent, Colors.orangeAccent]),
-                                        borderRadius: BorderRadius.all(Radius.circular(80.0)),
+                                            colors: [
+                                              Colors.pinkAccent,
+                                              Colors.orangeAccent
+                                            ]),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(80.0)),
                                       ),
                                       child: Container(
-                                        constraints: const BoxConstraints(minWidth: 64, minHeight: 60),
+                                        constraints: const BoxConstraints(
+                                            minWidth: 64, minHeight: 60),
                                         alignment: Alignment.center,
                                         child: const Text(
                                           '-',
-                                          textAlign: TextAlign.center,style: TextStyle(fontSize: 40),
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(fontSize: 40),
                                         ),
                                       ),
                                     ),
-
                                   )
                                 ],
                               ),
@@ -217,27 +247,33 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
                               Row(
                                 children: [
                                   ElevatedButton(
-                                    onPressed: ()=> buttonPressed("+"),
+                                    onPressed: () => buttonPressed("+"),
                                     style: ElevatedButton.styleFrom(
                                         padding: const EdgeInsets.all(0),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(50),
-                                        )
-                                    ),
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                        )),
                                     child: Ink(
                                       decoration: const BoxDecoration(
                                         gradient: LinearGradient(
                                             begin: Alignment.bottomRight,
                                             end: Alignment.topLeft,
-                                            colors: [Colors.pinkAccent, Colors.orangeAccent]),
-                                        borderRadius: BorderRadius.all(Radius.circular(80.0)),
+                                            colors: [
+                                              Colors.pinkAccent,
+                                              Colors.orangeAccent
+                                            ]),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(80.0)),
                                       ),
                                       child: Container(
-                                        constraints: const BoxConstraints(minWidth: 64.0, minHeight: 140.0),
+                                        constraints: const BoxConstraints(
+                                            minWidth: 64.0, minHeight: 140.0),
                                         alignment: Alignment.center,
                                         child: const Text(
                                           '+',
-                                          textAlign: TextAlign.center,style: TextStyle(fontSize: 40),
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(fontSize: 40),
                                         ),
                                       ),
                                     ),
@@ -252,27 +288,33 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
                               Row(
                                 children: [
                                   ElevatedButton(
-                                    onPressed: ()=> buttonPressed("/"),
+                                    onPressed: () => buttonPressed("/"),
                                     style: ElevatedButton.styleFrom(
                                         padding: const EdgeInsets.all(0.0),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(50),
-                                        )
-                                    ),
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                        )),
                                     child: Ink(
                                       decoration: const BoxDecoration(
                                         gradient: LinearGradient(
                                             begin: Alignment.bottomRight,
                                             end: Alignment.topLeft,
-                                            colors: [Colors.pinkAccent, Colors.orangeAccent]),
-                                        borderRadius: BorderRadius.all(Radius.circular(60.0)),
+                                            colors: [
+                                              Colors.pinkAccent,
+                                              Colors.orangeAccent
+                                            ]),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(60.0)),
                                       ),
                                       child: Container(
-                                        constraints: const BoxConstraints(minWidth: 64.0, minHeight: 60.0),
+                                        constraints: const BoxConstraints(
+                                            minWidth: 64.0, minHeight: 60.0),
                                         alignment: Alignment.center,
                                         child: const Text(
                                           '/',
-                                          textAlign: TextAlign.center,style: TextStyle(fontSize: 40),
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(fontSize: 40),
                                         ),
                                       ),
                                     ),
@@ -283,27 +325,33 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
                               Row(
                                 children: [
                                   ElevatedButton(
-                                    onPressed: ()=> buttonPressed("*"),
+                                    onPressed: () => buttonPressed("*"),
                                     style: ElevatedButton.styleFrom(
                                         padding: const EdgeInsets.all(0.0),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(50),
-                                        )
-                                    ),
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                        )),
                                     child: Ink(
                                       decoration: const BoxDecoration(
                                         gradient: LinearGradient(
                                             begin: Alignment.bottomRight,
                                             end: Alignment.topLeft,
-                                            colors: [Colors.pinkAccent, Colors.orangeAccent]),
-                                        borderRadius: BorderRadius.all(Radius.circular(80.0)),
+                                            colors: [
+                                              Colors.pinkAccent,
+                                              Colors.orangeAccent
+                                            ]),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(80.0)),
                                       ),
                                       child: Container(
-                                        constraints: const BoxConstraints(minWidth: 64.0, minHeight: 60.0),
+                                        constraints: const BoxConstraints(
+                                            minWidth: 64.0, minHeight: 60.0),
                                         alignment: Alignment.center,
                                         child: const Text(
                                           '*',
-                                          textAlign: TextAlign.center,style: TextStyle(fontSize: 40),
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(fontSize: 40),
                                         ),
                                       ),
                                     ),
@@ -314,27 +362,33 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
                               Row(
                                 children: [
                                   ElevatedButton(
-                                    onPressed: ()=> buttonPressed("%"),
+                                    onPressed: () => buttonPressed("%"),
                                     style: ElevatedButton.styleFrom(
                                         padding: const EdgeInsets.all(0.0),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(50),
-                                        )
-                                    ),
+                                          borderRadius:
+                                              BorderRadius.circular(50),
+                                        )),
                                     child: Ink(
                                       decoration: const BoxDecoration(
                                         gradient: LinearGradient(
                                             begin: Alignment.bottomRight,
                                             end: Alignment.topLeft,
-                                            colors: [Colors.pinkAccent, Colors.orangeAccent]),
-                                        borderRadius: BorderRadius.all(Radius.circular(80.0)),
+                                            colors: [
+                                              Colors.pinkAccent,
+                                              Colors.orangeAccent
+                                            ]),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(80.0)),
                                       ),
                                       child: Container(
-                                        constraints: const BoxConstraints(minWidth: 64.0, minHeight: 63.0),
+                                        constraints: const BoxConstraints(
+                                            minWidth: 64.0, minHeight: 63.0),
                                         alignment: Alignment.center,
                                         child: const Text(
                                           '%',
-                                          textAlign: TextAlign.center,style: TextStyle(fontSize: 40),
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(fontSize: 40),
                                         ),
                                       ),
                                     ),
@@ -350,27 +404,29 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
                         Row(
                           children: <Widget>[
                             ElevatedButton(
-                              onPressed: ()=> buttonPressed("="),
+                              onPressed: () => buttonPressed("="),
                               style: ElevatedButton.styleFrom(
                                   padding: const EdgeInsets.all(0),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(50),
-                                  )
-                              ),
+                                  )),
                               child: Ink(
                                 decoration: const BoxDecoration(
                                   gradient: LinearGradient(
                                       begin: Alignment.bottomRight,
                                       end: Alignment.topLeft,
                                       colors: [Colors.pink, Color(0xFFF48FB1)]),
-                                  borderRadius: BorderRadius.all(Radius.circular(80.0)),
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(80.0)),
                                 ),
                                 child: Container(
-                                  constraints: const BoxConstraints(minWidth: 150.0, minHeight: 60.0),
+                                  constraints: const BoxConstraints(
+                                      minWidth: 150.0, minHeight: 60.0),
                                   alignment: Alignment.center,
                                   child: const Text(
                                     '=',
-                                    textAlign: TextAlign.center,style: TextStyle(fontSize: 40),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(fontSize: 40),
                                   ),
                                 ),
                               ),
